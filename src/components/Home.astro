@@ -65,7 +65,10 @@ const ticker = ["Slow-baked software", "No dark patterns", "No guilt streaks", "
             <h3>{boop.name}</h3>
             <p class="oneLiner">{boop.oneLiner}</p>
             <p>{boop.description}</p>
-            <p class="foot">{boop.platforms}</p>
+            <p class="foot">
+              {boop.platforms}
+              <a class="go" href={boop.href}>{boop.linkLabel} <span aria-hidden="true">→</span></a>
+            </p>
           </div>
         </article>
 
