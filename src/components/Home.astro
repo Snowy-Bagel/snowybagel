@@ -1,0 +1,543 @@
+---
+import "@fontsource-variable/bricolage-grotesque/index.css";
+import "@fontsource/dm-mono/400.css";
+import "@fontsource/dm-mono/500.css";
+import Mark from "../components/Mark.astro";
+import { site, projects, links } from "../data/site";
+
+const [boop, spoonful] = projects;
+const ticker = ["Slow-baked software", "No dark patterns", "No guilt streaks", "Made by one human", "Best served warm"];
+---
+
+<div class="counter">
+  <header class="top">
+    <a class="brand" href="/" aria-label="Snowy Bagel, home">
+      <Mark size={34} />
+      <span>snowy bagel</span>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#apps">Apps</a>
+      <a href="#studio">Studio</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="heroText">
+        <p class="kicker"><i></i> A tiny app studio</p>
+        <h1>Small apps for <mark>real life.</mark></h1>
+        <p class="intro">{site.intro}</p>
+      </div>
+
+      <div class="bagelWrap">
+        <button class="bagel" type="button" aria-label="Boop the bagel">
+          <Mark size="100%" />
+        </button>
+        <p class="boopCount" aria-live="polite"><span data-count>Go on, boop it.</span></p>
+      </div>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="track">
+        {
+          [0, 1].map(() =>
+            ticker.map((t) => (
+              <span>
+                {t} <b>✳</b>
+              </span>
+            )),
+          )
+        }
+      </div>
+    </div>
+
+    <section id="apps" class="apps">
+      <h2>What's baking</h2>
+
+      <div class="cards">
+        <article class="card">
+          <div class="art artBoop" aria-hidden="true">
+            <i></i><i></i><i></i>
+            <b></b>
+          </div>
+          <div class="cardBody">
+            <p class="tag">{boop.status} · {boop.statusNote}</p>
+            <h3>{boop.name}</h3>
+            <p class="oneLiner">{boop.oneLiner}</p>
+            <p>{boop.description}</p>
+            <p class="foot">{boop.platforms}</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="art artSpoon" aria-hidden="true">
+            {
+              [1, 1, 1, 0, 0].map((full) => (
+                <svg viewBox="0 0 20 48" class:list={[full ? "full" : "empty"]}>
+                  <ellipse cx="10" cy="10" rx="7" ry="9" />
+                  <path d="M10 19v25" stroke-linecap="round" />
+                </svg>
+              ))
+            }
+          </div>
+          <div class="cardBody">
+            <p class="tag">{spoonful.status} · {spoonful.statusNote}</p>
+            <h3>{spoonful.name}</h3>
+            <p class="oneLiner">{spoonful.oneLiner}</p>
+            <p>{spoonful.description}</p>
+            <p class="foot">
+              {spoonful.platforms}
+              <a class="go" href={spoonful.href}>{spoonful.linkLabel} <span aria-hidden="true">→</span></a>
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="studio" class="studio">
+      <h2>The studio</h2>
+      <p>{site.about}</p>
+      <p class="sig">— <a href={site.founder.href}>{site.founder.name}</a>, head baker</p>
+    </section>
+  </main>
+
+  <footer>
+    <ul>
+      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+    </ul>
+    <p>© {new Date().getFullYear()} Snowy Bagel</p>
+  </footer>
+</div>
+
+<script>
+  const bagel = document.querySelector<HTMLButtonElement>(".bagel");
+  const out = document.querySelector<HTMLElement>("[data-count]");
+  const lines = ["Boop.", "Boop boop.", "That's three.", "It likes you.", "Okay, it's a bagel.", "Still a bagel."];
+  let n = 0;
+  bagel?.addEventListener("click", () => {
+    n += 1;
+    bagel.classList.remove("booped");
+    void bagel.offsetWidth;
+    bagel.classList.add("booped");
+    if (out) out.textContent = n <= lines.length ? lines[n - 1] : `${n} boops.`;
+  });
+</script>
+
+<style>
+  .counter {
+    --ink: #0e0e0e;
+    --paper: #fff;
+    --lox: #ff8f78;
+    --pad: clamp(20px, 5vw, 72px);
+    --max: 1180px;
+    min-height: 100vh;
+    color: var(--ink);
+    background: var(--paper);
+    font-family: "Bricolage Grotesque Variable", system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.5;
+    overflow-x: clip;
+  }
+  .top,
+  .hero,
+  .apps,
+  .studio,
+  footer {
+    max-width: calc(var(--max) + 2 * var(--pad));
+    margin-inline: auto;
+    padding-inline: var(--pad);
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 22px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  nav {
+    display: flex;
+    gap: 6px;
+  }
+  nav a {
+    padding: 7px 16px;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav a:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    align-items: center;
+    gap: clamp(24px, 5vw, 72px);
+    padding-block: clamp(40px, 7vw, 96px) clamp(56px, 8vw, 110px);
+  }
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font: 500 13px/1 "DM Mono", ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    animation: pop 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  }
+  .kicker i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--lox);
+    border: 2px solid var(--ink);
+  }
+  h1 {
+    margin-top: 20px;
+    font-size: clamp(3.1rem, 8.6vw, 7.4rem);
+    font-weight: 800;
+    font-stretch: 85%;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    animation: pop 0.7s 0.06s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  }
+  mark {
+    color: inherit;
+    background: linear-gradient(var(--lox), var(--lox)) no-repeat 0 88% / 100% 0.28em;
+    white-space: nowrap;
+  }
+  .intro {
+    margin-top: 28px;
+    max-width: 30em;
+    text-wrap: balance;
+    font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+    animation: pop 0.7s 0.14s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  }
+
+  .bagelWrap {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    animation: pop 0.8s 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  }
+  .bagel {
+    all: unset;
+    box-sizing: border-box;
+    display: block;
+    width: min(100%, 400px);
+    aspect-ratio: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    rotate: -10deg;
+    filter: drop-shadow(10px 12px 0 var(--lox));
+    transition: rotate 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4), scale 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bagel :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .bagel:hover {
+    rotate: 8deg;
+  }
+  .bagel:active {
+    scale: 0.94;
+  }
+  .bagel:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 8px;
+  }
+  .bagel:global(.booped) {
+    animation: squish 0.55s cubic-bezier(0.3, 0.7, 0.3, 1);
+  }
+  .boopCount {
+    font: 500 13px/1 "DM Mono", ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    min-height: 1em;
+  }
+
+  .ticker {
+    border-block: 2px solid var(--ink);
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: slide 36s linear infinite;
+  }
+  .track span {
+    padding: 13px 0 13px 28px;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .track b {
+    margin-left: 28px;
+    color: var(--lox);
+  }
+
+  h2 {
+    font-size: clamp(2rem, 4.4vw, 3.4rem);
+    font-weight: 800;
+    font-stretch: 85%;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .apps {
+    padding-block: clamp(64px, 9vw, 120px) 0;
+  }
+  .cards {
+    margin-top: clamp(28px, 4vw, 48px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(20px, 3vw, 36px);
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--ink);
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: 7px 7px 0 var(--ink);
+    transition: translate 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.3), box-shadow 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+  }
+  .card:hover {
+    translate: -3px -3px;
+    box-shadow: 12px 12px 0 var(--ink);
+  }
+  .art {
+    height: 220px;
+    border-bottom: 2px solid var(--ink);
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .artBoop > * {
+    grid-area: 1 / 1;
+    border-radius: 50%;
+  }
+  .artBoop b {
+    width: 34px;
+    height: 34px;
+    background: var(--lox);
+    border: 2px solid var(--ink);
+  }
+  .artBoop i {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--ink);
+    animation: ripple 3s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+  }
+  .artBoop i:nth-child(2) {
+    animation-delay: 1s;
+  }
+  .artBoop i:nth-child(3) {
+    animation-delay: 2s;
+  }
+  .artSpoon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+  }
+  .artSpoon svg {
+    height: 116px;
+    overflow: visible;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2.5;
+    transition: translate 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+  }
+  .artSpoon .full ellipse {
+    fill: var(--lox);
+  }
+  .artSpoon .empty {
+    stroke-dasharray: 3 4;
+    opacity: 0.55;
+  }
+  .card:hover .artSpoon .full:nth-child(1) {
+    translate: 0 -8px;
+  }
+  .card:hover .artSpoon .full:nth-child(2) {
+    translate: 0 -8px;
+    transition-delay: 0.05s;
+  }
+  .card:hover .artSpoon .full:nth-child(3) {
+    translate: 0 -8px;
+    transition-delay: 0.1s;
+  }
+  .cardBody {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(22px, 3vw, 34px);
+  }
+  .tag,
+  .foot {
+    font: 500 12.5px/1.4 "DM Mono", ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .card h3 {
+    margin-top: 10px;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    font-weight: 800;
+    font-stretch: 85%;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+  .oneLiner {
+    margin: 6px 0 14px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .foot {
+    margin-top: auto;
+    padding-top: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .go {
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .go:hover {
+    background: var(--lox);
+    color: var(--ink);
+  }
+
+  .studio {
+    padding-block: clamp(72px, 10vw, 140px);
+  }
+  .studio p {
+    margin-top: 24px;
+    max-width: 24em;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    text-wrap: pretty;
+  }
+  .studio .sig {
+    font: 500 14px/1.4 "DM Mono", ui-monospace, monospace;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding-block: 24px 40px;
+    border-top: 2px solid var(--ink);
+    font: 500 13px/1.4 "DM Mono", ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  footer ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+  }
+  footer a,
+  .sig a {
+    text-underline-offset: 0.25em;
+  }
+  footer a:hover,
+  .sig a:hover {
+    background: var(--lox);
+    text-decoration: none;
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      translate: 0 18px;
+    }
+  }
+  @keyframes squish {
+    0% {
+      scale: 1 1;
+    }
+    25% {
+      scale: 1.12 0.84;
+    }
+    55% {
+      scale: 0.93 1.08;
+    }
+    80% {
+      scale: 1.03 0.98;
+    }
+    100% {
+      scale: 1 1;
+    }
+  }
+  @keyframes ripple {
+    from {
+      scale: 1;
+      opacity: 1;
+    }
+    to {
+      scale: 9;
+      opacity: 0;
+    }
+  }
+  @keyframes slide {
+    to {
+      translate: -50% 0;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .hero,
+    .cards {
+      grid-template-columns: 1fr;
+    }
+    .bagel {
+      width: min(70%, 300px);
+    }
+    .art {
+      height: 180px;
+    }
+  }
+  @media (max-width: 520px) {
+    nav {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .counter *,
+    .counter *::before {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
