@@ -21,8 +21,8 @@ export const projects = [
     platforms: "iPhone, iPad & Apple Watch",
     status: "In the oven",
     statusNote: "Private beta soon",
-    href: null as string | null,
-    linkLabel: null as string | null,
+    href: "https://getbooped.app/" as string | null,
+    linkLabel: "getbooped.app" as string | null,
   },
   {
     slug: "spoonful",
